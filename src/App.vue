@@ -1,28 +1,65 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <post v-for="post in posts" :key="post.id" :post="post" />
+    <div id="sensor"></div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Post from '@/components/Post';
+import gql from 'graphql-tag';
+import scrollMonitor from 'scrollmonitor';
+
+const pageSize = 10;
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components: { Post },
+  data() {
+    return {
+      page: 0
+    }
+  },
+  mounted () {
+    const el = document.getElementById('sensor');
+    const elementWatcher = scrollMonitor.create(el);
+    elementWatcher.enterViewport(() => {
+      if (this.posts)  {
+        this.showMore();
+      }
+    });
+  },
+  methods: {
+    showMore() {
+      this.page += pageSize;
+      this.$apollo.queries.posts.fetchMore({
+        variables: {
+          offset: this.page,
+          limit: pageSize,
+        },
+        updateQuery: (existing, incoming) => ({
+          posts: [...existing.posts, ...incoming.fetchMoreResult.posts]
+        }),
+      })
+    },
+  },
+  apollo: {
+    posts: {
+      query: gql`
+        query GetPostPages ($offset: Int, $limit: Int) {
+          posts (offset: $offset, limit: $limit) {
+            id
+            url
+            title,
+            created_at
+          }
+        }
+      `,
+      variables: {
+        offset: 0,
+        limit: pageSize,
+      },
+    },
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
