@@ -30,7 +30,7 @@ export default {
     });
   },
   methods: {
-    showMore() {
+    fetchMore() {
       this.page += pageSize;
       this.$apollo.queries.posts.fetchMore({
         variables: {
