@@ -25,7 +25,7 @@ export default {
     const elementWatcher = scrollMonitor.create(el);
     elementWatcher.enterViewport(() => {
       if (this.posts)  {
-        this.showMore();
+        this.fetchMore();
       }
     });
   },
@@ -47,7 +47,7 @@ export default {
     posts: {
       query: gql`
         query GetPostPages ($offset: Int, $limit: Int) {
-          posts (offset: $offset, limit: $limit) {
+          posts (offset: $offset, limit: $limit, order_by: {created_at: asc}) {
             id
             url
             title,
