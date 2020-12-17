@@ -1,24 +1,24 @@
-# infinite-scroll
+# vue-apollo-hasura-infinite-scroll
 
 ## Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Docker setup
+```
+docker-compose up -d
+```
+
+> Note: you'll need to create the database and seed it
+
+## env file
+
+```
+cp .env.sample .env
+```
+
+## Compiles and hot-reloads for development
 ```
 npm run serve
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
